@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
 import { Card, CardContent } from "@/components/ui/card"
+import { FaGoogle, FaGithub, FaDiscord , FaReddit } from "react-icons/fa";
 import { Form,FormControl,FormDescription,FormItem,FormField,FormLabel,FormMessage,useFormField } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
@@ -39,11 +40,31 @@ export const SignInView = () => {
 
         await authClient.signIn.email({
             email:data.email,
-            password:data.password
+            password:data.password,
+            callbackURL:"/",
         },{
             onSuccess: () => {
-                router.push('/')
                 setpending(false)
+            },
+            onError: ({error}) =>{
+                setpending(false)
+                seterror(error.message)
+            }
+        },
+    )
+    }
+
+    const onSocial = async(provider: "github" | "google" | "discord" | "reddit") =>{
+        seterror(null);
+        setpending(true);
+
+        await authClient.signIn.social({
+            provider:provider,
+            callbackURL:"/",
+        },{
+            onSuccess: () => {
+                setpending(false)
+                router.push('/')
             },
             onError: ({error}) =>{
                 setpending(false)
@@ -123,8 +144,10 @@ export const SignInView = () => {
                                 </span>
                                 </div>
                                 <div className='grid grid-cols-2 gap-4'>
-                                    <Button variant="outline" type='button' className='w-full hover:bg-black hover:text-white' disabled={pending}>Google</Button>
-                                    <Button variant="outline" type='button' className='w-full hover:bg-black hover:text-white' disabled={pending}>Github</Button>
+                                    <Button variant="outline" type='button' className='w-full hover:bg-black hover:text-white' disabled={pending} onClick={() => onSocial("google")}><FaGoogle /> Google</Button>
+                                    <Button variant="outline" type='button' className='w-full hover:bg-black hover:text-white' disabled={pending} onClick={() => onSocial("github")}><FaGithub /> Github</Button>
+                                    <Button variant="outline" type='button' className='w-full hover:bg-black hover:text-white' disabled={pending} onClick={() => onSocial("discord")}><FaDiscord />Discord</Button>
+                                    <Button variant="outline" type='button' className='w-full hover:bg-black hover:text-white' disabled={pending} onClick={() => onSocial("reddit")}><FaReddit />Reddit</Button>
                                 </div>
                                 <div className='text-center text-sm'>
                                     Don't have an account?{" "}
