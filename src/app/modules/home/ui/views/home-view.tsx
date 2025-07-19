@@ -14,9 +14,7 @@ const HomeView = () => {
   return(
     <>
       <div>
-        Home Page
-        <p>Logged in as {session?.user?.name}</p>
-        <Button onClick={() => authClient.signOut({fetchOptions :{onSuccess: () => router.push("/auth/sign-in")}})}>Sign Out</Button>
+       Home Page
       </div>
     </>
   )
