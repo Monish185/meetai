@@ -207,7 +207,7 @@ export const SignUpView = () => {
                         </form>
                     </Form>
                     
-                    <div className="bg-gradient-to-r from-[#654ea3] to-[#eaafc8] relative hidden md:flex flex-col gap-y-4 items-center justify-center">
+                    <div className="bg-gradient-to-r from-sidebar-accent  to-sidebar relative hidden md:flex flex-col gap-y-4 items-center justify-center">
                         <img src="/logo.svg" alt="logo" className="h-[92px] w-[92px]"/>
                         <p className="text-2xl font-semibold text-white">
                             Meet.AI
