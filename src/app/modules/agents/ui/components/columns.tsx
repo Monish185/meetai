@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 // You can use a Zod schema here if you want.
 
 
-export const columns: ColumnDef<AgentGetMany[0]>[] = [
+export const columns: ColumnDef<AgentGetMany["items"][0]>[] = [
   {
     accessorKey: "name",
     header: "Agent Name",
@@ -41,7 +41,7 @@ export const columns: ColumnDef<AgentGetMany[0]>[] = [
           className="flex items-center gap-x-2 [&>svg]:size-4 [&>svg]:text-blue-700 [&>svg]:shrink-0"
         >
           <VideoIcon className="text-blue-700"/>
-          <span className="text-xs">0 Meetings</span>
+          <span className="text-xs">{row.original.meetingCount} {row.original.meetingCount === 1 ? "Meeting" : "Meetings"}</span>
         </Badge>
       )
     }
