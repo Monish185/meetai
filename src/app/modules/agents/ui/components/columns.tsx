@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 // You can use a Zod schema here if you want.
 
 
-export const columns: ColumnDef<AgentGetMany["items"][0]>[] = [
+export const columns: ColumnDef<AgentGetMany["items"][number]>[] = [
   {
     accessorKey: "name",
     header: "Agent Name",
