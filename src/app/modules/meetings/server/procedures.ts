@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { meetings } from "@/db/schema";
-import { createTRPCRouter, baseProcedure, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { eq, getTableColumns, desc, and, ilike, count } from "drizzle-orm";
