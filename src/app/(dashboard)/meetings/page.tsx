@@ -7,8 +7,14 @@ import { MeetingsListHeader } from "@/app/modules/meetings/ui/components/meeting
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { loadSearchParams } from "@/app/modules/agents/params";
+import { SearchParams } from "nuqs/server";
 
-const Page = async () => {
+interface Props{
+    searchParams: Promise<SearchParams>
+}
+const Page = async ({searchParams}: Props) => {
+    const params = await loadSearchParams(searchParams)
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -16,7 +22,9 @@ const Page = async () => {
         redirect("/auth/sign-in");
     }
     const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(trpc.meetings.getMany.queryOptions({}));
+    void queryClient.prefetchQuery(trpc.meetings.getMany.queryOptions({
+        ...params,
+    }));
     const dehydratedState = dehydrate(queryClient); 
     return (
         <>

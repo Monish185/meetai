@@ -22,6 +22,11 @@ interface CommandSelectProps{
 export const CommandSelect = ({options, onSelect, onSearch, placeholder="Select an option", className, value, isSearchable}: CommandSelectProps) => {
     const [open, setOpen] = useState(false);
     const selectedOption = options.find((option) => option.value === value);
+
+    const handleOpenChange = (open: boolean) => {
+        onSearch?.("");
+        setOpen(open);
+    }
     return (
         <>
             <Button
@@ -36,7 +41,7 @@ export const CommandSelect = ({options, onSelect, onSearch, placeholder="Select 
                 </div>
                 <ChevronsUpDownIcon className="size-4" />
             </Button>
-            <ResponsiveCommandDialog open={open} onOpenChange={setOpen} shouldFilter={!onSearch}>
+            <ResponsiveCommandDialog open={open} onOpenChange={handleOpenChange} shouldFilter={!onSearch}>
                 <CommandInput placeholder="Search..." onValueChange={onSearch} />
                 <CommandList>
                     <CommandEmpty>
