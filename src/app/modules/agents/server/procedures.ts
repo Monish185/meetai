@@ -2,12 +2,54 @@ import { db } from "@/db";
 import { agents } from "@/db/schema";
 import { createTRPCRouter, baseProcedure, protectedProcedure } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { agentsInsertSchema } from "../schemas";
+import { agentsInsertSchema, agentsUpdateSchema } from "../schemas";
 import z from "zod";
 import { eq, getTableColumns, desc, sql, and, ilike, count } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/contants";
 
 export const agentsRouter = createTRPCRouter({
+
+    update: protectedProcedure.input(agentsUpdateSchema).mutation(async({ctx,input}) => {
+        const [updatedAgent] = await db
+        .update(agents)
+        .set({
+            name: input.name,
+            instructions: input.instructions,
+            updatedAt: new Date(),
+        })
+        .where(
+            and(
+                eq(agents.id, input.id),
+                eq(agents.userId, ctx.auth.user.id)
+            )
+        )
+        .returning();
+
+        if (!updatedAgent) {
+            throw new TRPCError({code: "NOT_FOUND", message: "Agent not found"});
+        }
+
+        return updatedAgent;
+    }),
+
+    remove: protectedProcedure.input(z.object({id: z.string()})).mutation(async({ctx,input}) => {
+        const [removedAgent] = await db
+        .delete(agents)
+        .where(
+            and(
+                eq(agents.id, input.id),
+                eq(agents.userId, ctx.auth.user.id)
+            )
+        )
+        .returning();
+
+        if (!removedAgent) {
+            throw new TRPCError({code: "NOT_FOUND", message: "Agent not found"});
+        }
+
+        return removedAgent;
+    }),
+
     getMany: protectedProcedure
     .input(
         z.object({
@@ -87,21 +129,4 @@ export const agentsRouter = createTRPCRouter({
         return createdAgent;
     }),
 
-    update: protectedProcedure.input(z.object({
-        id: z.string(),
-        name: z.string().min(1, "Name is required"),
-        instructions: z.string().min(10, "Instructions must be at least 10 characters long"),
-    })).mutation(async({ctx,input}) => {
-        const [updatedAgent] = await db
-        .update(agents)
-        .set({
-            name: input.name,
-            instructions: input.instructions,
-            updatedAt: new Date(),
-        })
-        .where(eq(agents.id, input.id))
-        .returning();
-
-        return updatedAgent;
-    })
 })
