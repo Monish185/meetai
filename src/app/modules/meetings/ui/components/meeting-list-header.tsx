@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { PlusIcon, XIcon } from "lucide-react"
+import { PlusIcon, XCircleIcon, XIcon } from "lucide-react"
 import { useState } from "react";
 import { DEFAULT_PAGE } from "@/contants";
 import { NewMeetingDialog } from "./new-meeting-dialog";
@@ -13,7 +13,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 export const MeetingsListHeader = () => {
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [filters, setFilters] = useMeetingsFilter()
-    const isAnyFilterModified = !!!filters.search && !filters.status && !filters.agentId
+    const isAnyFilterModified = !!filters.search || !!filters.status || !!filters.agentId
 
     const handleClearFilters = () => {
         setFilters({
@@ -40,8 +40,8 @@ export const MeetingsListHeader = () => {
                 <StatusFilter />
                 <AgentsIdFilter />
                 {isAnyFilterModified && (
-                    <Button variant="outline" size="icon" onClick={handleClearFilters}>
-                        <XIcon className="size-4"/>
+                    <Button variant="outline" onClick={handleClearFilters}>
+                        <XCircleIcon className="size-4"/>
                         Clear Filters
                     </Button>
                 )}
