@@ -9,6 +9,10 @@ import { useRouter } from "next/navigation";
 import { useConfirm } from "@/app/modules/agents/hooks/use-confirm";
 import { UpdateMeetingDialog } from "../components/update-meeting-dialog";
 import { useState } from "react";
+import { UpcomingState } from "../components/upcoming-state";
+import { ActiveState } from "../components/active-state";
+import { CancelledState } from "../components/cancelled-state";
+import { ProcessingState } from "../components/processing-state";
 
 interface MeetingIdViewProps {
     meetingId: string;
@@ -50,6 +54,15 @@ export const MeetingIdView = ({meetingId}: MeetingIdViewProps) => {
             toast.error(error instanceof Error ? error.message : "Something went wrong")
         }
     }
+
+        const isActive = data.status === "active"
+        const isCompleted = data.status === "completed"
+        const isCancelled = data.status === "cancelled"
+        const isProcessing = data.status === "processing"
+        const isUpcoming = data.status === "upcoming"
+
+
+
         return(
         <>
         <ConfirmDialog />
@@ -65,6 +78,11 @@ export const MeetingIdView = ({meetingId}: MeetingIdViewProps) => {
                     onEdit={() => setUpdateMeetingDialogOpen(true)}
                     onRemove={handleRemove}
                 />
+                {isActive && <ActiveState meetingId={meetingId} />}
+                {isCompleted && <div> Completed </div>}
+                {isCancelled && <CancelledState />}
+                {isProcessing && <ProcessingState />}
+                {isUpcoming && <UpcomingState meetingId={meetingId} onCancel={() => {}} isCancelled={false} />}
             </div>
         </>
     )
